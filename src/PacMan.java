@@ -77,7 +77,7 @@ public class PacMan extends JPanel {
         draw(g);
     }
     public void draw(Graphics g){
-        g.fillOval(pacman.x, pacman.y, pacman.ancho, pacman.largo);
+        g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
     }
 }
 
