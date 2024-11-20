@@ -20,9 +20,25 @@ public class PacMan extends JPanel {
     }
     // Mapa
     private String[] mapa = {
-
-
+        "XXXXXXXXXXXXXXXXXXX",
+        "X...........X.....X",
+        "X.XXXX.XXXX.X.XXX.X",
+        "X.XXXX.XXXX.X.XXX.X",
+        "X..................X",
+        "X.XXXX.X.XXXXX.XXXX",
+        "X.....X...X........X",
+        "XXXXX.XXX.XXXXXXX.XX",
+        "XXXXX.XXXXXXXXXXX.XX",
+        "XXXXX.XXXX.P..A...XX", // Fantasma Azul (A)
+        "XXXXX.XXXX.XXXXXXXXX",
+        "X........X...N.....X", // Fantasma Naranja (N)
+        "X.XXXX.XX.XXXXXX.XX",
+        "X.....XX.....X.R..X", // Fantasma Rosa (R)
+        "XXXXX.XX.XXXXX.XX.XX",
+        "X.....X......J.....X", // Fantasma Rojo (J)
+        "XXXXXXXXXXXXXXXXXXX"
     };
+    
     // Medidas
     private int contFilas = 21;
     private int contColumnas = 19;
