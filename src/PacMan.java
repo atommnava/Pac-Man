@@ -20,25 +20,29 @@ public class PacMan extends JPanel {
     }
     // Mapa
     private String[] mapa = {
-        "XXXXXXXXXXXXXXXXXXX",
-        "X...........X.....X",
-        "X.XXXX.XXXX.X.XXX.X",
-        "X.XXXX.XXXX.X.XXX.X",
-        "X..................X",
-        "X.XXXX.X.XXXXX.XXXX",
-        "X.....X...X........X",
-        "XXXXX.XXX.XXXXXXX.XX",
-        "XXXXX.XXXXXXXXXXX.XX",
-        "XXXXX.XXXX.P..A...XX", // Fantasma Azul (A)
-        "XXXXX.XXXX.XXXXXXXXX",
-        "X........X...N.....X", // Fantasma Naranja (N)
-        "X.XXXX.XX.XXXXXX.XX",
-        "X.....XX.....X.R..X", // Fantasma Rosa (R)
-        "XXXXX.XX.XXXXX.XX.XX",
-        "X.....X......J.....X", // Fantasma Rojo (J)
-        "XXXXXXXXXXXXXXXXXXX"
+            "XXXXXXXXXXXXXXXXXXX",
+            "X...........X.....X",
+            "X.XXXX.XXXX.X.XXX.X",
+            "X.XXXX.XXXX.X.XXX.X",
+            "X.................X",
+            "X.XXXX.X.XXXXX.XXXX",
+            "X.....X...X.......X",
+            "XXXXX.XXX.XXXXXX.XX",
+            "XXXXX.XXXXXXXXXX.XX",
+            "XXXXX.XXXX.P..A...X", // Fantasma Azul (A)
+            "XXXXX.XXXX.XXXXXXXX",
+            "X........X...N....X", // Fantasma Naranja (N)
+            "X.XXXX.XX.XXXXXX.XX",
+            "X.....XX.....X.R..X", // Fantasma Rosa (R)
+            "XXXXX.XX.XXXXX.XX.X",
+            "X.....X......J....X", // Fantasma Rojo (J)
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX"
     };
-    
+
     // Medidas
     private int contFilas = 21;
     private int contColumnas = 19;
@@ -56,9 +60,9 @@ public class PacMan extends JPanel {
     // Pacman
     private Image pacmanPrincipal;
 
-    //HashSet<Bloque> muros;
-    //HashSet<Bloque> comidas;
-    //HashSet<Bloque> fantasmas;
+    HashSet<Bloque> muros;
+    HashSet<Bloque> comidas;
+    HashSet<Bloque> fantasmas;
     Bloque pacman;
     Timer timer;
     public int vidas = 3;
@@ -72,15 +76,26 @@ public class PacMan extends JPanel {
 
         // Cargando las imagenes
         pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+        muroImagen = new ImageIcon(getClass().getResource("./cuadro.png")).getImage();
 
         mostrarMapa();
     }
     public void mostrarMapa(){
+        muros = new HashSet<Bloque>();
+        comidas = new HashSet<Bloque>();
+        fantasmas = new HashSet<Bloque>();
         for (int i = 0; i < contFilas; i++){
             for (int j = 0; j < contColumnas; j++){
-                int x = j * marcoTamanio;
-                int y = i * marcoTamanio;
+                //int x = j * marcoTamanio;
+                //int y = i * marcoTamanio;
                 pacman = new Bloque(x,y,marcoTamanio, marcoTamanio, pacmanPrincipal);
+                if (mapa == 'X') {
+                    Bloque muro = new Bloque(x,y,marcoTamanio,marcoTamanio,muroImagen);
+                    muros.add(muro);
+                } else if (mapa == '.') {
+                    Bloque comida = new Bloque(x + 14, y + 14, 4, 4, null);
+                    comidas.add(comida);
+                }
             }
         }
 
@@ -94,6 +109,7 @@ public class PacMan extends JPanel {
     }
     public void draw(Graphics g){
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
+
     }
 }
 
