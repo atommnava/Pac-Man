@@ -86,13 +86,15 @@ public class PacMan extends JPanel {
         fantasmas = new HashSet<Bloque>();
         for (int i = 0; i < contFilas; i++){
             for (int j = 0; j < contColumnas; j++){
-                //int x = j * marcoTamanio;
-                //int y = i * marcoTamanio;
+                int x = j * marcoTamanio;
+                int y = i * marcoTamanio;
+                String fila = mapa[i];
+                char map = fila.charAt(j);
                 pacman = new Bloque(x,y,marcoTamanio, marcoTamanio, pacmanPrincipal);
-                if (mapa == 'X') {
+                if (map == 'X') {
                     Bloque muro = new Bloque(x,y,marcoTamanio,marcoTamanio,muroImagen);
                     muros.add(muro);
-                } else if (mapa == '.') {
+                } else if (map == ' ') {
                     Bloque comida = new Bloque(x + 14, y + 14, 4, 4, null);
                     comidas.add(comida);
                 }
