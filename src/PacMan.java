@@ -21,21 +21,25 @@ public class PacMan extends JPanel {
     // Mapa
     private String[] mapa = {
             "XXXXXXXXXXXXXXXXXXX",
-            "X...........X.....X",
-            "X.XXXX.XXXX.X.XXX.X",
-            "X.XXXX.XXXX.X.XXX.X",
-            "X.................X",
-            "X.XXXX.X.XXXXX.XXXX",
-            "X.....X...X.......X",
-            "XXXXX.XXX.XXXXXXX.X",
-            "XXXXX.XXXXXXXXXXX.X",
-            "XXXXX.XXXX.P..A...X", // Fantasma Azul (A)
-            "XXXXX.XXXX.XXXXXXXX",
-            "X........X...N....X", // Fantasma Naranja (N)
-            "X.XXXX.XX..XXXXX.XX",
-            "X......X.....X.R..X", // Fantasma Rosa (R)
-            "XXXXX.XX.XXXXX.XX.X",
-            "X.....X......J....X", // Fantasma Rojo (J)
+            "X          X      X",
+            "X XXXX XXXX X XXX X",
+            "X XXXX XXXX X XXX X",
+            "X                 X",
+            "X XXXX X XXXXX.XXXX",
+            "X      X   X      X",
+            "XXXXX XXX XXXXXXX X",
+            "XXXXX XXXXXXXXXXX.X",
+            "XXXXX XXXX P  A   X", // Fantasma Azul (A)
+            "XXXXX XXXX XXXXXXXX",
+            "X      X   N      X", // Fantasma Naranja (N)
+            "X XXXX XX  XXXXX XX",
+            "X      X     X R  X", // Fantasma Rosa (R)
+            "XXXXX XX XXXXX XX X",
+            "X     X      J    X", // Fantasma Rojo (J)
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
             "XXXXXXXXXXXXXXXXXXX",
     };
 
@@ -91,7 +95,7 @@ public class PacMan extends JPanel {
                 if (mapa == 'X') {
                     Bloque muro = new Bloque(x,y,marcoTamanio,marcoTamanio,muroImagen);
                     muros.add(muro);
-                } else if (mapa == '.') {
+                } else if (mapa == ' ') {
                     Bloque comida = new Bloque(x + 14, y + 14, 4, 4, null);
                     comidas.add(comida);
                 } else if (mapa == 'P') {
