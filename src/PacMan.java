@@ -27,20 +27,16 @@ public class PacMan extends JPanel {
             "X.................X",
             "X.XXXX.X.XXXXX.XXXX",
             "X.....X...X.......X",
-            "XXXXX.XXX.XXXXXX.XX",
-            "XXXXX.XXXXXXXXXX.XX",
+            "XXXXX.XXX.XXXXXXX.X",
+            "XXXXX.XXXXXXXXXXX.X",
             "XXXXX.XXXX.P..A...X", // Fantasma Azul (A)
             "XXXXX.XXXX.XXXXXXXX",
             "X........X...N....X", // Fantasma Naranja (N)
-            "X.XXXX.XX.XXXXXX.XX",
-            "X.....XX.....X.R..X", // Fantasma Rosa (R)
+            "X.XXXX.XX..XXXXX.XX",
+            "X......X.....X.R..X", // Fantasma Rosa (R)
             "XXXXX.XX.XXXXX.XX.X",
             "X.....X......J....X", // Fantasma Rojo (J)
             "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX"
     };
 
     // Medidas
@@ -89,14 +85,17 @@ public class PacMan extends JPanel {
                 int x = j * marcoTamanio;
                 int y = i * marcoTamanio;
                 String fila = mapa[i];
-                char map = fila.charAt(j);
-                pacman = new Bloque(x,y,marcoTamanio, marcoTamanio, pacmanPrincipal);
-                if (map == 'X') {
+                char mapa = fila.charAt(j);
+
+                //pacman = new Bloque(x,y,marcoTamanio, marcoTamanio, pacmanPrincipal);
+                if (mapa == 'X') {
                     Bloque muro = new Bloque(x,y,marcoTamanio,marcoTamanio,muroImagen);
                     muros.add(muro);
-                } else if (map == ' ') {
+                } else if (mapa == '.') {
                     Bloque comida = new Bloque(x + 14, y + 14, 4, 4, null);
                     comidas.add(comida);
+                } else if (mapa == 'P') {
+                    pacman = new Bloque(x,y,marcoTamanio, marcoTamanio, pacmanPrincipal);
                 }
             }
         }
@@ -111,7 +110,9 @@ public class PacMan extends JPanel {
     }
     public void draw(Graphics g){
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
-
+        for (Bloque muro : muros) {
+            g.drawImage(muro.imagen, muro.x, muro.y, muro.ancho, muro.largo, null);
+        }
     }
 }
 
