@@ -19,7 +19,7 @@ public class PacMan extends JPanel {
         }
     }
     // Mapa
-    private String[] mapa = {
+   private String[] mapa = {
             "XXXXXXXXXXXXXXXXXXX",
             "X          X      X",
             "X XXXX XXXX X XXX X",
@@ -27,19 +27,19 @@ public class PacMan extends JPanel {
             "X                 X",
             "X XXXX X XXXXX.XXXX",
             "X      X   X      X",
-            "XXXXX XXX XXXXXXX X",
-            "XXXXX XXXXXXXXXXX.X",
-            "XXXXX XXXX P  A   X", // Fantasma Azul (A)
-            "XXXXX XXXX XXXXXXXX",
-            "X      X   N      X", // Fantasma Naranja (N)
+            "X XXX XXX XXXXXXX X",
+            "X XXX XXX XXXXXXX.X",
+            "X     XXX  P  A   X", // Fantasma Azul (A)
+            "XXXX   XXX XXXX  XX",
+            "X          N      X", // Fantasma Naranja (N)
             "X XXXX XX  XXXXX XX",
             "X      X     X R  X", // Fantasma Rosa (R)
             "XXXXX XX XXXXX XX X",
             "X     X      J    X", // Fantasma Rojo (J)
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
-            "XXXXXXXXXXXXXXXXXXX",
+            "XX  XXX XXXX  XXX X",
+            "X   X   XXX   X   X",
+            "X X X XXXXX X X X X",
+            "X X             X X",
             "XXXXXXXXXXXXXXXXXXX",
     };
 
