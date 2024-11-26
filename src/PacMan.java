@@ -1,15 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashSet;
 
-public class PacMan extends JPanel {
+public class PacMan extends JPanel implements KeyListener {
+
     class Bloque {
         int x;
         int y;
         int ancho;
         int largo;
         Image imagen;
+
+        char direccion = 'U';
         Bloque(int x, int y, int ancho, int largo, Image imagen) {
             this.x = x;
             this.y = y;
@@ -69,6 +74,7 @@ public class PacMan extends JPanel {
     public int vidas = 3;
     public int puntaje = 0;
     public boolean finDelJuego = false;
+    public char direcciones[] = {'U','R','L','D'};
 
     public PacMan() {
         setPreferredSize(new Dimension(anchoBorde, largoBorde));
@@ -122,13 +128,6 @@ public class PacMan extends JPanel {
         }
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.yellow);
-        draw(g);
-    }
-
     public void draw(Graphics g) {
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
         for (Bloque muro : muros) {
@@ -136,6 +135,44 @@ public class PacMan extends JPanel {
         }
         for (Bloque fantasma : fantasmas) {
             g.drawImage(fantasma.imagen, fantasma.x, fantasma.y, fantasma.ancho, fantasma.largo, null);
+        }
+        g.setColor(Color.white);
+        for (Bloque comida : comidas) {
+            g.fillRect(comida.x, comida.y, comida.ancho, comida.largo);
+        }
+        if (finDelJuego) {
+            // Perdiste
+            g.drawString("Perdiste",25,20);
+        } else {
+            // No has perdido
+            g.drawString("Puntaje: " ,25,20);
+        }
+    }
+
+    public void nuevaDireccion(char direccion){
+        
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        draw(g);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            pacman.nuevaDireccion('U');
         }
     }
 }
