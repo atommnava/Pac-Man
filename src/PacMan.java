@@ -14,6 +14,10 @@ public class PacMan extends JPanel implements KeyListener {
         int largo;
         Image imagen;
 
+        int inicioX;
+        int inicioY;
+        int velocidadX = 0;
+        int velocidadY = 0;
         char direccion = 'U';
         Bloque(int x, int y, int ancho, int largo, Image imagen) {
             this.x = x;
@@ -21,6 +25,8 @@ public class PacMan extends JPanel implements KeyListener {
             this.ancho = ancho;
             this.largo = largo;
             this.imagen = imagen;
+            this.inicioX = x;
+            this.inicioY = y;
         }
     }
     // Mapa
@@ -82,6 +88,10 @@ public class PacMan extends JPanel implements KeyListener {
         setFocusable(true);
 
         // Cargando las imagenes
+        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
         pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
         muroImagen = new ImageIcon(getClass().getResource("./cuadro.png")).getImage();
         fantasmaAzul = new ImageIcon(getClass().getResource("./fantasmaAzul.png")).getImage();
@@ -150,7 +160,13 @@ public class PacMan extends JPanel implements KeyListener {
     }
 
     public void nuevaDireccion(char direccion){
-        
+            this.direccion = direccion;
+            nuevaVelocidad();
+    }
+    public void nuevaVelocidad(){
+        if (this.direccion == 'U') {
+
+        }
     }
 
     @Override
