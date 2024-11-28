@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
 
-public class PacMan extends JPanel implements KeyListener {
+public class PacMan extends JPanel implements KeyListener, ActionListener {
 
     class Bloque {
         int x;
@@ -18,6 +19,12 @@ public class PacMan extends JPanel implements KeyListener {
         int inicioY;
         int velocidadX = 0;
         int velocidadY = 0;
+        /* Direcciones
+         * U = Up
+         * D = Down
+         * R = Right
+         * L = Left
+         */
         char direccion = 'U';
         Bloque(int x, int y, int ancho, int largo, Image imagen) {
             this.x = x;
@@ -28,7 +35,34 @@ public class PacMan extends JPanel implements KeyListener {
             this.inicioX = x;
             this.inicioY = y;
         }
+        public void nuevaDireccion(char direccion){
+            this.direccion = direccion;
+            nuevaVelocidad();
+        }
+        public void nuevaVelocidad(){
+            if (this.direccion == 'U') {
+                this.velocidadX = 0;
+                this.velocidadY = (-marcoTamanio / 4);
+            } else if (this.direccion == 'D') {
+                this.velocidadX = 0;
+                this.velocidadY = (marcoTamanio / 4);
+            } else if (this.direccion == 'L') {
+                this.velocidadX = (-marcoTamanio / 4);
+                this.velocidadY = 0;
+            } else if (this.direccion == 'R') {
+                this.velocidadX = (marcoTamanio / 4);
+                this.velocidadY = 0;
+            }
+            if (pacman.direccion == 'U') {
+                pacman.imagen = pacmanPrincipal;
+            }
+        }
     }
+
+    // ******************************************************
+    // *                  Mecánica principal                *
+    // ******************************************************
+
     // Mapa
     private String[] mapa = {
             "XXXXXXXXXXXXXXXXXXX",
@@ -36,10 +70,10 @@ public class PacMan extends JPanel implements KeyListener {
             "X XXXX XXXX X XXX X",
             "X XXXX XXXX X XXX X",
             "X                 X",
-            "X XXXX X XXXXX.XXXX",
+            "X XXXX X XXXXX XXXX",
             "X      X   X      X",
             "X XXX XXX XXXXXXX X",
-            "X XXX XXX XXXXXXX.X",
+            "X XXX XXX X XXXXX X",
             "X     XXX  P  A   X", // Fantasma Azul (A)
             "XXXX   XXX XXXX  XX",
             "X          N      X", // Fantasma Naranja (N)
@@ -85,20 +119,21 @@ public class PacMan extends JPanel implements KeyListener {
     public PacMan() {
         setPreferredSize(new Dimension(anchoBorde, largoBorde));
         setBackground(new Color(0,0,0));
+        addKeyListener(this);
         setFocusable(true);
 
         // Cargando las imagenes
-        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
-        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
-        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
-        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
-        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
         muroImagen = new ImageIcon(getClass().getResource("./cuadro.png")).getImage();
+
+        pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+
         fantasmaAzul = new ImageIcon(getClass().getResource("./fantasmaAzul.png")).getImage();
         fantasmaRosa = new ImageIcon(getClass().getResource("./fantasmaRosa.png")).getImage();
         fantasmaNaranja = new ImageIcon(getClass().getResource("./fantasmaNaranja.png")).getImage();
         fantasmaRojo = new ImageIcon(getClass().getResource("./fantasmaRojo.png")).getImage();
         mostrarMapa();
+        timer = new Timer(50, this);
+        timer.start();
     }
 
     public void mostrarMapa() {
@@ -108,10 +143,10 @@ public class PacMan extends JPanel implements KeyListener {
 
         for (int i = 0; i < contFilas; i++) {
             for (int j = 0; j < contColumnas; j++) {
-                int x = j * marcoTamanio;
-                int y = i * marcoTamanio;
                 String fila = mapa[i];
                 char mapa = fila.charAt(j);
+                int x = j * marcoTamanio;
+                int y = i * marcoTamanio;
 
                 if (mapa == 'X') {
                     Bloque muro = new Bloque(x, y, marcoTamanio, marcoTamanio, muroImagen);
@@ -138,6 +173,11 @@ public class PacMan extends JPanel implements KeyListener {
         }
     }
 
+    public void mover(){
+        pacman.x += pacman.velocidadX;
+        pacman.y += pacman.velocidadY;
+    }
+
     public void draw(Graphics g) {
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
         for (Bloque muro : muros) {
@@ -150,22 +190,14 @@ public class PacMan extends JPanel implements KeyListener {
         for (Bloque comida : comidas) {
             g.fillRect(comida.x, comida.y, comida.ancho, comida.largo);
         }
+        // Para ver el puntaje
+        g.setFont(new Font("Raleway", Font.PLAIN, 24));
         if (finDelJuego) {
             // Perdiste
             g.drawString("Perdiste",25,20);
         } else {
             // No has perdido
-            g.drawString("Puntaje: " ,25,20);
-        }
-    }
-
-    public void nuevaDireccion(char direccion){
-            this.direccion = direccion;
-            nuevaVelocidad();
-    }
-    public void nuevaVelocidad(){
-        if (this.direccion == 'U') {
-
+            g.drawString("❤" + String.valueOf(vidas) + " Puntaje: " + String.valueOf(puntaje),25,20);
         }
     }
 
@@ -187,8 +219,21 @@ public class PacMan extends JPanel implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        System.out.println("KeyEvent: " + e.getKeyCode()); // Para ver la tecla presionada
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             pacman.nuevaDireccion('U');
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            pacman.nuevaDireccion('D');
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            pacman.nuevaDireccion('L');
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            pacman.nuevaDireccion('R');
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        mover();
+        repaint(); // Repintar nuestro frame cada vez que nos movemos
     }
 }
