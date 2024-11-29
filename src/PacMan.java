@@ -203,6 +203,8 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         int nuevaX = pacman.x + pacman.velocidadX;
         int nuevaY = pacman.y + pacman.velocidadY;
 
+        // COLISIONES entre pacman, comida, fantasma y muros
+
         // Verificar si la nueva posición de Pacman colide con un muro
         boolean colisionConMuro = false;
 
@@ -226,6 +228,24 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             pacman.x = nuevaX;
             pacman.y = nuevaY;
         }
+
+        // Interacción pacman-comida
+        Bloque puntoComido = null; // Punto comido en NULL porque empeiza desde 0
+        for (Bloque comida : comidas) {
+            if (colision(pacman, comida)) {
+                puntoComido = comida;
+                puntaje = puntaje + 10;
+            }
+        }
+        comidas.remove(puntoComido);
+    }
+
+    // Método parac comprobar la realación de colisioens pacman - comida y pacman - fantasma
+    public boolean colision(Bloque a, Bloque b){
+        return a.x < b.x + b.ancho &&
+                a.x + a.ancho > b.x &&
+                a.y < b.y + b.ancho &&
+                a.y + a.ancho > b.y;
     }
 
     //Se dibujan los elementos en pantalla
