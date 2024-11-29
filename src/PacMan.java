@@ -108,22 +108,23 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     private int anchoBorde = contColumnas * marcoTamanio;
     private int largoBorde = contFilas * marcoTamanio;
 
-    // Imagenes
+    // Variables para almacenar las imagenes
+    //Muro
     private Image muroImagen;
+    //Fantasmas
     private Image fantasmaAzul;
     private Image fantasmaRosa;
     private Image fantasmaNaranja;
     private Image fantasmaRojo;
-
-    // Pacman
+    //Pacman posiciones
     private Image pacmanPrincipal;
     private Image pacmanAbajo;
     private Image pacmanIzquierda;
     private Image pacmanDerecha;
 
 
-    HashSet<Bloque> muros;
-    HashSet<Bloque> comidas;
+    HashSet<Bloque> muros; //almacena todos los bloques que representan los muros en el juego, evitando que se repitan.
+    HashSet<Bloque> comidas; //garantiza que no haya dos bloques con comida en la misma posición.
     HashSet<Bloque> fantasmas;
     Bloque pacman;
     Timer timer;
