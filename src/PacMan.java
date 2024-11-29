@@ -78,24 +78,24 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     // Mapa
     private String[] mapa = {
             "XXXXXXXXXXXXXXXXXXX",
-            "X          X      X",
-            "X XXXX XXXX X XXX X",
-            "X XXXX XXXX X XXX X",
+            "X           X      X",
+            "X  XXX XXXX X  XX X",
+            "X  XXX XXXX X  XX X",
             "X                 X",
-            "X XXXX X XXXXX XXXX",
+            "X XXXX X XXXXX  XXX",
             "X      X   X      X",
             "X XXX XXX XXXXXXX X",
-            "X XXX XXX X XXXXX X",
-            "X     XXX  P  A   X", // Fantasma Azul (A)
+            "X XXX  XX X XXXXX X",
+            "X      XX  P  A   X", // Fantasma Azul (A)
             "XXXX   XXX XXXX  XX",
             "X          N      X", // Fantasma Naranja (N)
             "X XXXX XX  XXXXX XX",
             "X      X     X R  X", // Fantasma Rosa (R)
             "XXXXX XX XXXXX XX X",
             "X     X      J    X", // Fantasma Rojo (J)
-            "XX  XXX XXXX  XXX X",
-            "X   X   XXX   X   X",
-            "X X X XXXXX X X X X",
+            "XX  XXX  XXX  XXX X",
+            "X   X    XX   X   X",
+            "X X X  XXXX X X X X",
             "X X             X X",
             "XXXXXXXXXXXXXXXXXXX",
     };
@@ -192,10 +192,29 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         }
     }
 
-    public void mover(){
-        pacman.x += pacman.velocidadX;
-        pacman.y += pacman.velocidadY;
+    public void mover() {
+        int nuevaX = pacman.x + pacman.velocidadX;
+        int nuevaY = pacman.y + pacman.velocidadY;
+
+        // Verificar si la nueva posición de Pacman colide con un muro
+        boolean colisionConMuro = false;
+
+        for (Bloque muro : muros) {
+            // Verificar si Pacman colisiona con algún muro
+            if (nuevaX < muro.x + muro.ancho && nuevaX + pacman.ancho > muro.x &&
+                    nuevaY < muro.y + muro.largo && nuevaY + pacman.largo > muro.y) {
+                colisionConMuro = true;
+                break; // Si colisiona, no se mueve
+            }
+        }
+
+        // Si no hay colisión, permite que Pacman se mueva
+        if (!colisionConMuro) {
+            pacman.x = nuevaX;
+            pacman.y = nuevaY;
+        }
     }
+
 
     public void draw(Graphics g) {
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
