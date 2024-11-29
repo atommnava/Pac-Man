@@ -35,10 +35,22 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             this.inicioX = x;
             this.inicioY = y;
         }
-        public void nuevaDireccion(char direccion){
+        public void nuevaDireccion(char direccion) {
             this.direccion = direccion;
             nuevaVelocidad();
+
+            // Cambiar la imagen de Pac-Man según la dirección
+            if (this.direccion == 'U') {
+                pacman.imagen = pacmanPrincipal;  // Pac-Man mirando hacia arriba
+            } else if (this.direccion == 'D') {
+                pacman.imagen = pacmanAbajo;   // Pac-Man mirando hacia abajo
+            } else if (this.direccion == 'L') {
+                pacman.imagen = pacmanIzquierda; // Pac-Man mirando hacia la izquierda
+            } else if (this.direccion == 'R') {
+                pacman.imagen = pacmanDerecha;  // Pac-Man mirando hacia la derecha
+            }
         }
+
         public void nuevaVelocidad(){
             if (this.direccion == 'U') {
                 this.velocidadX = 0;
@@ -105,6 +117,10 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
 
     // Pacman
     private Image pacmanPrincipal;
+    private Image pacmanAbajo;
+    private Image pacmanIzquierda;
+    private Image pacmanDerecha;
+
 
     HashSet<Bloque> muros;
     HashSet<Bloque> comidas;
@@ -126,6 +142,9 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         muroImagen = new ImageIcon(getClass().getResource("./cuadro.png")).getImage();
 
         pacmanPrincipal = new ImageIcon(getClass().getResource("./pacmanArriba.png")).getImage();
+        pacmanAbajo = new ImageIcon(getClass().getResource("./pacmanAbajo.png")).getImage();
+        pacmanIzquierda = new ImageIcon(getClass().getResource("./pacmanIzquierda.png")).getImage();
+        pacmanDerecha = new ImageIcon(getClass().getResource("./pacmanDerecha.png")).getImage();
 
         fantasmaAzul = new ImageIcon(getClass().getResource("./fantasmaAzul.png")).getImage();
         fantasmaRosa = new ImageIcon(getClass().getResource("./fantasmaRosa.png")).getImage();
