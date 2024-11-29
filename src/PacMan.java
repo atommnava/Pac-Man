@@ -1,10 +1,10 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.HashSet;
+import javax.swing.*; //Componentes gráficos
+import java.awt.*; //Clases de componentes gráficos
+import java.awt.event.ActionEvent; //Acciones
+import java.awt.event.ActionListener; //Recibir acciones
+import java.awt.event.KeyEvent; //Representar un evento de teclado
+import java.awt.event.KeyListener; //Escuchar eventos de teclado
+import java.util.HashSet; //Almacena elementos únicos (sin duplicados)
 
 public class PacMan extends JPanel implements KeyListener, ActionListener {
 
@@ -35,9 +35,11 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             this.inicioX = x;
             this.inicioY = y;
         }
+
+        // Actualizar la dirección en la que se mueve Pac-Man, ajustar su velocidad en función de esa dirección y cambiar su imagen para reflejar el nuevo movimiento.
         public void nuevaDireccion(char direccion) {
             this.direccion = direccion;
-            nuevaVelocidad();
+            nuevaVelocidad(); //velocidad de pac-man en función de su posición (x,y)
 
             // Cambiar la imagen de Pac-Man según la dirección
             if (this.direccion == 'U') {
@@ -51,10 +53,13 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             }
         }
 
+
+        //Ajustar las velocidades de Pac-Man en los ejes X e Y dependiendo de la dirección en la que se mueve
         public void nuevaVelocidad(){
+            //Comprueba la dirección actual
             if (this.direccion == 'U') {
                 this.velocidadX = 0;
-                this.velocidadY = (-marcoTamanio / 4);
+                this.velocidadY = (-marcoTamanio / 4); //Establece la velocidad en función del tamaño de los bloques del juego.
             } else if (this.direccion == 'D') {
                 this.velocidadX = 0;
                 this.velocidadY = (marcoTamanio / 4);
@@ -65,9 +70,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
                 this.velocidadX = (marcoTamanio / 4);
                 this.velocidadY = 0;
             }
-            if (pacman.direccion == 'U') {
-                pacman.imagen = pacmanPrincipal;
-            }
+
         }
     }
 
@@ -157,24 +160,26 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     }
 
     public void mostrarMapa() {
-        muros = new HashSet<>();
-        comidas = new HashSet<>();
-        fantasmas = new HashSet<>();
+        muros = new HashSet<>();//Conjunto vacío para muros
+        comidas = new HashSet<>(); //Conjunto vacío para comidas
+        fantasmas = new HashSet<>(); //Conjunto vacío para fantasmas
 
-        for (int i = 0; i < contFilas; i++) {
-            for (int j = 0; j < contColumnas; j++) {
-                String fila = mapa[i];
-                char mapa = fila.charAt(j);
+        for (int i = 0; i < contFilas; i++) { //recorre filas del mapa
+            for (int j = 0; j < contColumnas; j++) { //recorre columnas del mapa
+                String fila = mapa[i]; //obtiene el texto de la fila actual
+                char mapa = fila.charAt(j); //obtiene el caracter en la posición j de la cadena
+                //Coordenadas gráficas en pixeles
                 int x = j * marcoTamanio;
                 int y = i * marcoTamanio;
 
-                if (mapa == 'X') {
+                //Interpreta los caracteres del mapa y crea objetos del tipo Bloque para representar los elementos
+                if (mapa == 'X') { //Crea un objeto Bloque en la posición (x, y) con tamaño marcoTamanio x marcoTamanio.
                     Bloque muro = new Bloque(x, y, marcoTamanio, marcoTamanio, muroImagen);
-                    muros.add(muro);
-                } else if (mapa == ' ') {
+                    muros.add(muro); //Se añade al conjunto de muros
+                } else if (mapa == ' ') { //Crea un objeto Bloque que representa comida, ubicado un poco centrado dentro del cuadro (x + 14, y + 14).
                     Bloque comida = new Bloque(x + 14, y + 14, 4, 4, null);
-                    comidas.add(comida);
-                } else if (mapa == 'P') {
+                    comidas.add(comida); //Se añade al conjunto
+                } else if (mapa == 'P') { //Crea un objeto Pac-man
                     pacman = new Bloque(x, y, marcoTamanio, marcoTamanio, pacmanPrincipal);
                 } else if (mapa == 'A') {
                     Bloque fantasmaA = new Bloque(x, y, marcoTamanio, marcoTamanio, fantasmaAzul);
@@ -193,6 +198,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         }
     }
 
+    //Controla cómo se mueve Pac-Man y verifica si puede avanzar sin chocar con un muro
     public void mover() {
         int nuevaX = pacman.x + pacman.velocidadX;
         int nuevaY = pacman.y + pacman.velocidadY;
@@ -200,8 +206,14 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         // Verificar si la nueva posición de Pacman colide con un muro
         boolean colisionConMuro = false;
 
+        //Recorre el conjunto de muros
         for (Bloque muro : muros) {
             // Verificar si Pacman colisiona con algún muro
+            //Pac-Man está a la izquierda del muro: nuevaX < muro.x + muro.ancho
+            //Pac-Man está a la derecha del muro: nuevaX + pacman.ancho > muro.x
+            //Pac-Man está por encima del muro: nuevaY < muro.y + muro.largo
+            //Pac-Man está por debajo del muro: nuevaY + pacman.largo > muro.y
+
             if (nuevaX < muro.x + muro.ancho && nuevaX + pacman.ancho > muro.x &&
                     nuevaY < muro.y + muro.largo && nuevaY + pacman.largo > muro.y) {
                 colisionConMuro = true;
@@ -216,21 +228,23 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         }
     }
 
-
+    //Se dibujan los elementos en pantalla
     public void draw(Graphics g) {
         g.drawImage(pacman.imagen, pacman.x, pacman.y, pacman.ancho, pacman.largo, null);
+        //Recorre cada bloque del muro y lo dibuja
         for (Bloque muro : muros) {
             g.drawImage(muro.imagen, muro.x, muro.y, muro.ancho, muro.largo, null);
         }
+        //Recorre cada fantasma y los dibuja
         for (Bloque fantasma : fantasmas) {
             g.drawImage(fantasma.imagen, fantasma.x, fantasma.y, fantasma.ancho, fantasma.largo, null);
         }
-        g.setColor(Color.white);
+        g.setColor(Color.white); //establece el color de las comidas
         for (Bloque comida : comidas) {
-            g.fillRect(comida.x, comida.y, comida.ancho, comida.largo);
+            g.fillRect(comida.x, comida.y, comida.ancho, comida.largo); //dibuja un rectángulo
         }
-        // Para ver el puntaje
-        g.setFont(new Font("Raleway", Font.PLAIN, 24));
+        // Muestra el puntaje y las vidas en la parte superior de la pantalla.
+        g.setFont(new Font("Raleway", Font.PLAIN, 24)); //Tipo de letras y tamaño de fuente
         if (finDelJuego) {
             // Perdiste
             g.drawString("Perdiste",25,20);
@@ -240,25 +254,30 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         }
     }
 
+    //Dibujar panel de la interfaz gráfica
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        draw(g);
+        super.paintComponent(g); //Pintarse correctamente
+        draw(g); //Se dibuja
     }
 
+    //Maneja los eventos de teclas que se presionan
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
+    //Maneja los eventos de tecla presionada.
     @Override
     public void keyPressed(KeyEvent e) {
 
     }
 
+    //Se activa cuando el usuario suelta una tecla del teclado
     @Override
     public void keyReleased(KeyEvent e) {
         System.out.println("KeyEvent: " + e.getKeyCode()); // Para ver la tecla presionada
+        //Compara el código de la tecla que se tecleó para realizar su acción específica
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             pacman.nuevaDireccion('U');
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
