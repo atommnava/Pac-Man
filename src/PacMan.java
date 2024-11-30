@@ -320,7 +320,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         g.setFont(new Font("Raleway", Font.PLAIN, 24)); //Tipo de letras y tamaño de fuente
         if (finDelJuego) {
             // Perdiste
-            g.drawString("Perdiste :(",25,20);
+            g.drawString("GAME OVER",275,300);
         } else {
             // No has perdido
             g.drawString("❤" + String.valueOf(vidas) + " Puntaje: " + String.valueOf(puntaje),25,20);
