@@ -5,6 +5,7 @@ import java.awt.event.ActionListener; //Recibir acciones
 import java.awt.event.KeyEvent; //Representar un evento de teclado
 import java.awt.event.KeyListener; //Escuchar eventos de teclado
 import java.util.HashSet; //Almacena elementos únicos (sin duplicados)
+import java.util.Random;
 
 public class PacMan extends JPanel implements KeyListener, ActionListener {
 
@@ -72,6 +73,11 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             }
 
         }
+
+        public void reiniciar(){
+            this.x = this.inicioX;
+            this.y = this.inicioY;
+        }
     }
 
     // ******************************************************
@@ -135,6 +141,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     public int puntaje = 0;
     public boolean finDelJuego = false;
     public char direcciones[] = {'U','R','L','D'};
+    Random dir = new Random();
 
     public PacMan() {
         setPreferredSize(new Dimension(anchoBorde, largoBorde));
@@ -154,9 +161,19 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         fantasmaRosa = new ImageIcon(getClass().getResource("./fantasmaRosa.png")).getImage();
         fantasmaNaranja = new ImageIcon(getClass().getResource("./fantasmaNaranja.png")).getImage();
         fantasmaRojo = new ImageIcon(getClass().getResource("./fantasmaRojo.png")).getImage();
+
         mostrarMapa();
+
+        // Para que los Fantasmas vayan en direcciones aleatorias
+        for (Bloque fantasma : fantasmas) {
+            char nuevaDireccion = direcciones[dir.nextInt(direcciones.length)];
+            fantasma.nuevaDireccion(nuevaDireccion);
+        }
         timer = new Timer(50, this);
         timer.start();
+        System.out.println("Paredes " + muros.size());
+        System.out.println("Comidas " + comidas.size());
+        System.out.println("Fantasmas " + fantasmas.size());
     }
 
     public void mostrarMapa() {
@@ -238,6 +255,18 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             }
         }
         comidas.remove(puntoComido);
+
+        // Interacción pacman-fantasma
+        for (Bloque fantasma : fantasmas) {
+            if (colision(pacman, fantasma)) {
+                vidas -= 1;
+                if (vidas <= 0) {
+                    finDelJuego = true;
+                    break;
+                }
+                reiniciarPos();
+            }
+        }
     }
 
     // Método parac comprobar la realación de colisioens pacman - comida y pacman - fantasma
@@ -267,10 +296,22 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         g.setFont(new Font("Raleway", Font.PLAIN, 24)); //Tipo de letras y tamaño de fuente
         if (finDelJuego) {
             // Perdiste
-            g.drawString("Perdiste",25,20);
+            g.drawString("Perdiste :(",25,20);
         } else {
             // No has perdido
             g.drawString("❤" + String.valueOf(vidas) + " Puntaje: " + String.valueOf(puntaje),25,20);
+        }
+    }
+
+    public void reiniciarPos()
+    {
+        pacman.velocidadX = 0;
+        pacman.velocidadY = 0;
+        pacman.reiniciar();
+        for (Bloque fantasma : fantasmas) {
+            fantasma.reiniciar();
+            char nuevaDireccion = direcciones[dir.nextInt(direcciones.length)];
+            fantasma.nuevaDireccion(nuevaDireccion);
         }
     }
 
@@ -297,6 +338,14 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyReleased(KeyEvent e) {
         System.out.println("KeyEvent: " + e.getKeyCode()); // Para ver la tecla presionada
+
+        if (finDelJuego) {
+            mostrarMapa();
+            vidas = 3;
+            puntaje = 0;
+            finDelJuego = false;
+            timer.start();
+        }
         //Compara el código de la tecla que se tecleó para realizar su acción específica
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             pacman.nuevaDireccion('U');
@@ -313,5 +362,6 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
         mover();
         repaint(); // Repintar nuestro frame cada vez que nos movemos
+        if (finDelJuego) timer.stop();
     }
 }
