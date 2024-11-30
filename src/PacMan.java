@@ -39,18 +39,19 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
 
         // Actualizar la dirección en la que se mueve Pac-Man, ajustar su velocidad en función de esa dirección y cambiar su imagen para reflejar el nuevo movimiento.
         public void nuevaDireccion(char direccion) {
+            char prevDir = this.direccion;
             this.direccion = direccion;
             nuevaVelocidad(); //velocidad de pac-man en función de su posición (x,y)
 
-            // Cambiar la imagen de Pac-Man según la dirección
-            if (this.direccion == 'U') {
-                pacman.imagen = pacmanPrincipal;  // Pac-Man mirando hacia arriba
-            } else if (this.direccion == 'D') {
-                pacman.imagen = pacmanAbajo;   // Pac-Man mirando hacia abajo
-            } else if (this.direccion == 'L') {
-                pacman.imagen = pacmanIzquierda; // Pac-Man mirando hacia la izquierda
-            } else if (this.direccion == 'R') {
-                pacman.imagen = pacmanDerecha;  // Pac-Man mirando hacia la derecha
+            this.x += this.velocidadX;
+            this.y += this.velocidadY;
+            for (Bloque muro : muros) {
+                if (colision(this, muro)) {
+                    this.x -= this.velocidadX;
+                    this.y -= this.velocidadY;
+                    this.direccion = prevDir;
+                    nuevaVelocidad();
+                }
             }
         }
 
@@ -72,6 +73,16 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
                 this.velocidadY = 0;
             }
 
+            // Cambiar la imagen de Pac-Man según la dirección
+            if (pacman.direccion == 'U') {
+                pacman.imagen = pacmanPrincipal;  // Pac-Man mirando hacia arriba
+            } else if (pacman.direccion == 'D') {
+                pacman.imagen = pacmanAbajo;   // Pac-Man mirando hacia abajo
+            } else if (pacman.direccion == 'L') {
+                pacman.imagen = pacmanIzquierda; // Pac-Man mirando hacia la izquierda
+            } else if (pacman.direccion == 'R') {
+                pacman.imagen = pacmanDerecha;  // Pac-Man mirando hacia la derecha
+            }
         }
 
         public void reiniciar(){
@@ -95,7 +106,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             "X      X   X      X",
             "X XXX XXX XXXXXXX X",
             "X XXX  XX X XXXXX X",
-            "X      XX  P  A   X", // Fantasma Azul (A)
+            "X      XX  P   A  X", // Fantasma Azul (A)
             "XXXX   XXX XXXX  XX",
             "X          N      X", // Fantasma Naranja (N)
             "X XXXX XX  XXXXX XX",
@@ -141,7 +152,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     public int puntaje = 0;
     public boolean finDelJuego = false;
     public char direcciones[] = {'U','R','L','D'};
-    Random dir = new Random();
+    Random rand = new Random();
 
     public PacMan() {
         setPreferredSize(new Dimension(anchoBorde, largoBorde));
@@ -166,7 +177,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
 
         // Para que los Fantasmas vayan en direcciones aleatorias
         for (Bloque fantasma : fantasmas) {
-            char nuevaDireccion = direcciones[dir.nextInt(direcciones.length)];
+            char nuevaDireccion = direcciones[rand.nextInt(4)];
             fantasma.nuevaDireccion(nuevaDireccion);
         }
         timer = new Timer(50, this);
@@ -246,6 +257,31 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             pacman.y = nuevaY;
         }
 
+        // Interacción pacman-fantasma
+        for (Bloque fantasma : fantasmas) {
+            if (colision(pacman, fantasma)) {
+                vidas -= 1;
+                if (vidas <= 0) {
+                    finDelJuego = true;
+                    return;
+                }
+                reiniciarPos();
+            }
+            if (fantasma.y == marcoTamanio * 9 && fantasma.direccion != 'U' && fantasma.direccion != 'D') {
+                fantasma.nuevaDireccion('U');
+            }
+            fantasma.x += fantasma.velocidadX;
+            fantasma.y += fantasma.velocidadY;
+            for (Bloque muro : muros) {
+                if (colision(fantasma, muro) || fantasma.x <= 0 || fantasma.x + fantasma.ancho >= anchoBorde) {
+                    fantasma.x -= fantasma.velocidadX;
+                    fantasma.y -= fantasma.velocidadY;
+                    char nuevaDireccion = direcciones[rand.nextInt(4)];
+                    fantasma.nuevaDireccion(nuevaDireccion);
+                }
+            }
+        }
+
         // Interacción pacman-comida
         Bloque puntoComido = null; // Punto comido en NULL porque empeiza desde 0
         for (Bloque comida : comidas) {
@@ -255,18 +291,6 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             }
         }
         comidas.remove(puntoComido);
-
-        // Interacción pacman-fantasma
-        for (Bloque fantasma : fantasmas) {
-            if (colision(pacman, fantasma)) {
-                vidas -= 1;
-                if (vidas <= 0) {
-                    finDelJuego = true;
-                    break;
-                }
-                reiniciarPos();
-            }
-        }
     }
 
     // Método parac comprobar la realación de colisioens pacman - comida y pacman - fantasma
@@ -305,12 +329,12 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
 
     public void reiniciarPos()
     {
+        pacman.reiniciar();
         pacman.velocidadX = 0;
         pacman.velocidadY = 0;
-        pacman.reiniciar();
         for (Bloque fantasma : fantasmas) {
             fantasma.reiniciar();
-            char nuevaDireccion = direcciones[dir.nextInt(direcciones.length)];
+            char nuevaDireccion = direcciones[rand.nextInt(4)];
             fantasma.nuevaDireccion(nuevaDireccion);
         }
     }
@@ -340,11 +364,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         System.out.println("KeyEvent: " + e.getKeyCode()); // Para ver la tecla presionada
 
         if (finDelJuego) {
-            mostrarMapa();
-            vidas = 3;
-            puntaje = 0;
             finDelJuego = false;
-            timer.start();
         }
         //Compara el código de la tecla que se tecleó para realizar su acción específica
         if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -362,6 +382,8 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
         mover();
         repaint(); // Repintar nuestro frame cada vez que nos movemos
-        if (finDelJuego) timer.stop();
+        if (finDelJuego)  {
+            timer.stop();
+        }
     }
 }
