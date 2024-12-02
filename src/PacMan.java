@@ -1,3 +1,5 @@
+// *RELATIVO package pacman.application;
+
 import javax.swing.*; //Componentes gráficos
 import java.awt.*; //Clases de componentes gráficos
 import java.awt.event.ActionEvent; //Acciones
@@ -5,7 +7,7 @@ import java.awt.event.ActionListener; //Recibir acciones
 import java.awt.event.KeyEvent; //Representar un evento de teclado
 import java.awt.event.KeyListener; //Escuchar eventos de teclado
 import java.util.HashSet; //Almacena elementos únicos (sin duplicados)
-import java.util.Random;
+import java.util.Random; // Genera numeros aleatorios
 
 public class PacMan extends JPanel implements KeyListener, ActionListener {
 
@@ -98,7 +100,7 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
     // Mapa
     private String[] mapa = {
             "XXXXXXXXXXXXXXXXXXX",
-            "X           X      X",
+            "X           X     X",
             "X  XXX XXXX X  XX X",
             "X  XXX XXXX X  XX X",
             "X                 X",
@@ -119,7 +121,32 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             "X X             X X",
             "XXXXXXXXXXXXXXXXXXX",
     };
-
+     
+    /*
+    private String[] mapa = {
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXP     XAXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXNXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXRXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXJXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+            "XXXXXXXXXXXXXXXXXXX",
+    };
+     */
 
     // Medidas
     private int contFilas = 21;
@@ -291,6 +318,12 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             }
         }
         comidas.remove(puntoComido);
+
+        // Si PACMAN comió todas las comidas avanzar de nivel
+        if (comidas.isEmpty()) {
+            mostrarMapa();
+            reiniciarPos();
+        }
     }
 
     // Método parac comprobar la realación de colisioens pacman - comida y pacman - fantasma
@@ -317,10 +350,10 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
             g.fillRect(comida.x, comida.y, comida.ancho, comida.largo); //dibuja un rectángulo
         }
         // Muestra el puntaje y las vidas en la parte superior de la pantalla.
-        g.setFont(new Font("Raleway", Font.PLAIN, 24)); //Tipo de letras y tamaño de fuente
+        g.setFont(new Font("Raleway", Font.PLAIN, 20)); //Tipo de letras y tamaño de fuente
         if (finDelJuego) {
             // Perdiste
-            g.drawString("GAME OVER",275,300);
+            g.drawString("GAME OVER",50,50);
         } else {
             // No has perdido
             g.drawString("❤" + String.valueOf(vidas) + " Puntaje: " + String.valueOf(puntaje),25,20);
@@ -364,7 +397,12 @@ public class PacMan extends JPanel implements KeyListener, ActionListener {
         System.out.println("KeyEvent: " + e.getKeyCode()); // Para ver la tecla presionada
 
         if (finDelJuego) {
+            mostrarMapa();
+            reiniciarPos();
+            vidas = 3;
+            puntaje = 0;
             finDelJuego = false;
+            timer.start();
         }
         //Compara el código de la tecla que se tecleó para realizar su acción específica
         if (e.getKeyCode() == KeyEvent.VK_UP) {
